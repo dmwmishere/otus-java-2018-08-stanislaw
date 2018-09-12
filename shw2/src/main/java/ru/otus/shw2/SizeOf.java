@@ -5,12 +5,12 @@ import java.lang.reflect.Field;
 
 public class SizeOf {
 
-    private final static int bitness = Integer.parseInt(System.getProperty("sun.arch.data.model"));
+    private final static int BITNESS = Integer.parseInt(System.getProperty("sun.arch.data.model"));
 
-    private final static int padding = 64;
+    private final static int PADDING = 64;
 
     static {
-        System.out.println(String.format("bitness = %d(%d bytes), padding = %d(%d bytes)", bitness, bitness/8, padding, padding/8));
+        System.out.println(String.format("BITNESS = %d(%d bytes), PADDING = %d(%d bytes)", BITNESS, BITNESS /8, PADDING, PADDING /8));
     }
 
     public static boolean isPrimitive(Object o) {
@@ -27,18 +27,18 @@ public class SizeOf {
         if(o instanceof Double) return Double.SIZE;
         if(o instanceof Character) return Character.SIZE;
         if(o instanceof Boolean) return 8; // The size
-        return -1;
+        throw new IllegalArgumentException(o.getClass().getName() + " is not primitive!");
     }
 
     public static int getAlignedFields(int fields_size){
-        int closestMultiple = (int)(fields_size/(padding/8f) + 0.5f) * (padding/8);
+        int closestMultiple = (int)(fields_size/(PADDING /8f) + 0.5f) * (PADDING /8);
         return closestMultiple < fields_size ? closestMultiple + 8 : closestMultiple;
     }
 
     public static int sizeof_bits(Object obj, String indent){
         if(obj == null){
-            System.out.println(indent + "Object is null return " + bitness/8);
-            return bitness/8; // return only reference size
+            System.out.println(indent + "Object is null return " + BITNESS /8);
+            return BITNESS /8; // return only reference size
         }
         else {
             Class<? extends Object> cls = obj.getClass();
@@ -49,7 +49,7 @@ public class SizeOf {
                 type = "primitive";
                 actual_size =  getPrimitiveSize(obj) / 8;
             } else {
-                int reference_size = bitness; // Class header or array reference (2^31-8) size;
+                int reference_size = BITNESS; // Class header or array reference (2^31-8) size;
                 if (cls.isArray()) {
                     int array_size = 0;
                     int array_len = Array.getLength(obj);
