@@ -1,9 +1,7 @@
 package ru.otus.test.shw3;
 
 import junit.framework.TestCase;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import ru.otus.shw3.MyArrayList;
 
 import java.util.Arrays;
@@ -12,7 +10,7 @@ import java.util.List;
 import static java.util.Collections.*;
 
 
-public class ColleciontsTests extends TestCase {
+public class CollectionsTests extends TestCase {
 
     MyArrayList<Float> lst2 = new MyArrayList<>();
 
@@ -23,7 +21,7 @@ public class ColleciontsTests extends TestCase {
         System.out.printf("%-10s = %s\n", pref, lst.stream().reduce((ss1, ss2) -> String.format("%5s,%5s", ss1, ss2)).toString());
     }
 
-    public ColleciontsTests(){
+    public CollectionsTests(){
         lst2.addAll(testData);
         printArray("Initial", lst2);
         System.out.println();
