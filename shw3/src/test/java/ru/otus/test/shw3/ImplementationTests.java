@@ -182,4 +182,27 @@ public class ImplementationTests extends TestCase {
         compareElementByElement(lst1, lst2);
     }
 
+    @Test
+    public void test10_workWithNulls(){
+        MyArrayList<Integer> list = new MyArrayList<>();
+        list.add(1);
+        list.add(null);
+        list.add(null);
+        list.add(null);
+        list.addAll(3, Arrays.asList(null, null, null));
+        list.set(1, 2);
+        list.add(3,6);
+        list.addAll(6, Arrays.asList(4,5,6));
+
+        System.out.println("Get null item = " + list.get(2));
+
+        assertTrue(list.contains(null));
+
+        System.out.println("null MyArrayList = " + list.toString());
+
+        while(list.contains(null)) list.remove(null);
+
+        System.out.println("after remove MyArrayList = " + list.toString());
+    }
+
 }

@@ -46,7 +46,7 @@ public class CollectionsTests extends TestCase {
         reverse(lst2);
 
         int i = lst2.size()-1;
-        for(float f: lst2) assertEquals(testData.get(i--), f);
+        for(Float f: lst2) assertEquals(testData.get(i--), f);
 
         printArray("Reverse", lst2);
     }
