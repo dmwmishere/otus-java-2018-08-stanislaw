@@ -85,13 +85,18 @@ public class MyArrayList <T> implements List<T> {
 
     @Override
     public boolean isEmpty() {
-        return size==0?true:false;
+        return size == 0;
     }
 
     @Override
     public int indexOf(Object o) {
         for(int i = 0; i < size(); i++){
-            if(data[i].equals(o)) return i;
+            if(o == null){
+                if (data[i] == null) return i;
+            }
+            else{
+                if (o.equals(data[i])) return i;
+            }
         }
         return -1;
     }
@@ -190,10 +195,19 @@ public class MyArrayList <T> implements List<T> {
         return oldValue;
     }
 
-    public class MyIterator implements Iterator<T>{
+    @Override
+    public Iterator<T> iterator() {
+        return new MyListIterator(0);
+    }
+
+    public class MyListIterator implements ListIterator<T>{
 
         int next = 0;
         int prev = -1;
+
+        MyListIterator(int index) {
+            next = index;
+        }
 
         @Override
         public boolean hasNext() {
@@ -210,18 +224,6 @@ public class MyArrayList <T> implements List<T> {
         public void remove() {
             MyArrayList.this.remove(prev);
             next--;
-        }
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return new MyIterator();
-    }
-
-    public class MyListIterator extends MyIterator implements ListIterator<T>{
-
-        MyListIterator(int index) {
-            next = index;
         }
 
         @Override
