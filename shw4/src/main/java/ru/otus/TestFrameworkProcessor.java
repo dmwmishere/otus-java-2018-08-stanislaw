@@ -41,7 +41,7 @@ public class TestFrameworkProcessor {
 
             TestCaseRunner tcr = new TestCaseRunner(testCaseClass);
 
-            tcr.runTest();
+            tcr.runTest(TestCaseRunner.TestMode.SINGLE_STEP);
             int failed = tcr.getFailed(), passed = tcr.getPassed(), skipped = tcr.getSkipped();
             System.out.printf("==============================================================\n" +
                     "Total tests = %d, \u001B[31mFailed = %d, \u001B[32mPassed = %d, \u001B[33mskipped = %d\n\u001B[0m" +
