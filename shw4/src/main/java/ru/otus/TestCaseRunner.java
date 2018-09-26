@@ -15,11 +15,13 @@ public class TestCaseRunner {
     private int failed = 0, passed = 0, skipped = 0;
     private final Class<?> testCase;
 
+    public enum TestMode {SINGLE_STEP, MULTI_STEP};
+
     public TestCaseRunner(final Class<?> testCase){
         this.testCase = testCase;
     }
 
-    public void runTest(){
+    public void runTest(final TestMode mode){
         List<Method> before = methodsByAnnotation(testCase, Before.class);
 
         List<Method> testStep = methodsByAnnotation(testCase, Test.class);
@@ -34,24 +36,56 @@ public class TestCaseRunner {
         List<Method> after = methodsByAnnotation(testCase, After.class);
 
         try {
-            Object obj = testCase.newInstance();
 
-            for (Method method : before) {
-                // skip test case execution if there are any errors before test steps
-                if (!executeTest(method, obj)) return;
-            }
+            switch (mode){
+                case SINGLE_STEP:
 
-            for (Method method : testStep) {
-                if (failed > 0) { // skip all steps after any failures occurred
-                    skipped++;
-                } else {
-                    if (executeTest(method, obj)) passed++;
-                    else failed++;
-                }
-            }
+                    for(Method step : testStep){
+                        System.out.println("----------- " + step.getName() + " -----------");
 
-            for (Method method : after) {
-                executeTest(method, obj);
+                        if(failed > 0){
+                            skipped++;
+                        } else {
+                            Object obj = testCase.newInstance();
+
+                            for (Method method : before) {
+                                // skip test case execution if there are any errors before test steps
+                                if (!executeTest(method, obj)) return;
+                            }
+
+                            if (executeTest(step, obj)) passed++;
+                            else failed++;
+
+                            for (Method method : after) {
+                                executeTest(method, obj);
+                            }
+                        }
+
+                    }
+
+                    break;
+
+                case MULTI_STEP:
+
+                    Object obj = testCase.newInstance();
+
+                    for (Method method : before) {
+                        // skip test case execution if there are any errors before test steps
+                        if (!executeTest(method, obj)) return;
+                    }
+
+                    for (Method method : testStep) {
+                        if (failed > 0) { // skip all steps after any failures occurred
+                            skipped++;
+                        } else {
+                            if (executeTest(method, obj)) passed++;
+                            else failed++;
+                        }
+                    }
+
+                    for (Method method : after) {
+                        executeTest(method, obj);
+                    }
             }
 
         } catch (IllegalAccessException | InstantiationException e) {
