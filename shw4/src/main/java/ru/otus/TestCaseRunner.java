@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TestCaseRunner {
-    private int failed = 0, passed = 0, skipped = 0;
+    private int failed = 0, passed = 0;
     private final Class<?> testCase;
 
-    public TestCaseRunner(final Class<?> testCase){
+    public TestCaseRunner(final Class<?> testCase) {
         this.testCase = testCase;
     }
 
-    public void runTest(){
+    public void runTest() {
         List<Method> before = methodsByAnnotation(testCase, Before.class);
 
         List<Method> testStep = methodsByAnnotation(testCase, Test.class);
@@ -34,26 +34,22 @@ public class TestCaseRunner {
         List<Method> after = methodsByAnnotation(testCase, After.class);
 
         try {
-            Object obj = testCase.newInstance();
+            for (Method step : testStep) {
+                System.out.println("----------- " + step.getName() + " -----------");
 
-            for (Method method : before) {
-                // skip test case execution if there are any errors before test steps
-                if (!executeTest(method, obj)) return;
-            }
+                Object obj = testCase.newInstance();
 
-            for (Method method : testStep) {
-                if (failed > 0) { // skip all steps after any failures occurred
-                    skipped++;
-                } else {
-                    if (executeTest(method, obj)) passed++;
-                    else failed++;
+                for (Method method : before) {
+                    if (!executeTest(method, obj)) return;
+                }
+
+                if (executeTest(step, obj)) passed++;
+                else failed++;
+
+                for (Method method : after) {
+                    executeTest(method, obj);
                 }
             }
-
-            for (Method method : after) {
-                executeTest(method, obj);
-            }
-
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -81,9 +77,5 @@ public class TestCaseRunner {
 
     public int getPassed() {
         return passed;
-    }
-
-    public int getSkipped() {
-        return skipped;
     }
 }
