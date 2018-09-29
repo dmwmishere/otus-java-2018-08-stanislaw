@@ -20,6 +20,7 @@ public class TestCaseRunner {
     }
 
     public void runTest() {
+
         List<Method> before = methodsByAnnotation(testCase, Before.class);
 
         List<Method> testStep = methodsByAnnotation(testCase, Test.class);
@@ -34,6 +35,7 @@ public class TestCaseRunner {
         List<Method> after = methodsByAnnotation(testCase, After.class);
 
         try {
+          
             for (Method step : testStep) {
                 System.out.println("----------- " + step.getName() + " -----------");
 
