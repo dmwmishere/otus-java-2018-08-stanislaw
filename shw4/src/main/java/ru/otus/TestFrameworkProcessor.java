@@ -41,11 +41,12 @@ public class TestFrameworkProcessor {
 
             TestCaseRunner tcr = new TestCaseRunner(testCaseClass);
 
-            tcr.runTest(TestCaseRunner.TestMode.SINGLE_STEP);
-            int failed = tcr.getFailed(), passed = tcr.getPassed(), skipped = tcr.getSkipped();
+          tcr.runTest();
+            int failed = tcr.getFailed(), passed = tcr.getPassed();
+
             System.out.printf("==============================================================\n" +
-                    "Total tests = %d, \u001B[31mFailed = %d, \u001B[32mPassed = %d, \u001B[33mskipped = %d\n\u001B[0m" +
-                    "==============================================================\n", failed + passed + skipped, failed, passed, skipped);
+                    "Total tests = %d, \u001B[31mFailed = %d, \u001B[32mPassed = %d\n\u001B[0m" +
+                    "==============================================================\n", failed + passed, failed, passed);
 
         } else {
             System.out.println(testCaseClass.getName() + " is not a test case. skip.");
