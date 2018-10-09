@@ -15,12 +15,13 @@ public class Main {
 
     private static final int SIZE = 250;
 
-    public static void main(String [] args) throws Exception{
+    public static void main(String [] args){
 
         DBCachedService db = new DBCachedService();
 
         for(int i = 0; i < SIZE; i++){
-            db.insertInto(new TableData(i, "User input", new byte [1024*1024]));
+            db.getById(i);
+            // db.insertInto(new TableData(i, "User input", new byte [1024*1024]));
             // Uncomment if using with javaagent:
             // Thread.sleep(1000);
         }
