@@ -195,6 +195,8 @@ public class AtmTests {
 
         atm.deposit(Collections.singletonList(new Bill(CurrencyCode.RUB, 100)));
 
+        atm.saveState();
+
         System.out.println("1 = " + atm.getStorageSum());
 
         AtmDepartament atmDep = new AtmDepartament();

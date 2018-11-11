@@ -14,13 +14,15 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.max;
 
-abstract public class AbstractAtm implements AtmBasicOperation, ManagableAtm {
+abstract public class AbstractAtm implements AtmBasicOperation, ManagableNode {
 
     private static final AtomicLong atmSeq = new AtomicLong();
 
     protected HashMap<CurrencyCode, Storage> storage;
 
     private final long atmId = atmSeq.getAndIncrement();
+
+    private byte [] prevState = null;
 
     @Setter
     private AbstractDepositCheck depositChecksPipeline;
@@ -96,13 +98,13 @@ abstract public class AbstractAtm implements AtmBasicOperation, ManagableAtm {
     }
 
     @Override
-    public byte [] saveState(){
-        return SerializationUtils.serialize(storage);
+    public void saveState(){
+        prevState = SerializationUtils.serialize(storage);
     }
 
     @Override
-    public void rollback2state(byte [] bytes) {
-        storage = (HashMap<CurrencyCode, Storage>) SerializationUtils.deserialize(bytes);
+    public void rollback2state() {
+        storage = (HashMap<CurrencyCode, Storage>) SerializationUtils.deserialize(prevState);
     }
 
 

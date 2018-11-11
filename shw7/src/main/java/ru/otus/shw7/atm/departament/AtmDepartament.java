@@ -1,45 +1,45 @@
 package ru.otus.shw7.atm.departament;
 
-import ru.otus.shw7.atm.ManagableAtm;
+import org.apache.commons.lang.NotImplementedException;
+import ru.otus.shw7.atm.ManagableNode;
 import ru.otus.shw7.currency.CurrencyCode;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-public class AtmDepartament implements ManagableAtm {
+public class AtmDepartament implements ManagableNode {
 
-    Map<ManagableAtm, byte[] > atms = new HashMap<>();
+    Set<ManagableNode > atms = new HashSet<>();
 
-    public void registerAtm(ManagableAtm atm) {
-        if (atms.containsKey(atm)) {
+    public void registerAtm(ManagableNode atm) {
+        if (atms.contains(atm)) {
             System.err.println("This ATM already registered");
         } else {
-            atms.put(atm, atm.saveState());
+            atms.add(atm);
         }
     }
 
     @Override
     public Map<CurrencyCode, Long> getStorageSum() {
         Map<CurrencyCode, Long> totalSum = new HashMap<>();
-        atms.keySet().forEach(atm -> atm.getStorageSum().forEach(((currencyCode, amount) ->
+        atms.forEach(atm -> atm.getStorageSum().forEach(((currencyCode, amount) ->
                 totalSum.put(currencyCode, (totalSum.containsKey(currencyCode) ? totalSum.get(currencyCode) : 0) + amount)
         )));
         return totalSum;
     }
 
-    public void restoreState(ManagableAtm atm){
-        byte [] prevState = atms.get(atm);
-
-        atm.rollback2state(prevState);
-
+    public void restoreState(ManagableNode atm){
+        atm.rollback2state();
     }
 
     @Override
-    public byte [] saveState() {
-        return null;
+    public void saveState() {
+        throw new NotImplementedException();
     }
 
     @Override
-    public void rollback2state(byte [] bytes) {
-
+    public void rollback2state() {
+        throw new NotImplementedException();
     }
 }
