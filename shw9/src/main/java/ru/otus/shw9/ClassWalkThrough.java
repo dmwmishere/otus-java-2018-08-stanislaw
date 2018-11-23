@@ -2,10 +2,7 @@ package ru.otus.shw9;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,36 +22,55 @@ public class ClassWalkThrough {
             if (obj.getClass().isArray()) { // ARRAY
                 sb.append('[');
                 int array_len = Array.getLength(obj);
+                int i = 0;
                 for (int j = 0; j < array_len; j++) {
-                    walkThrough(Array.get(obj, j), level + 1);
-                    if (j < array_len - 1) sb.append(',');
+                    Object subObj = Array.get(obj, j);
+                    if (subObj != null && i > 0){ sb.append(','); }
+                    if(subObj == null){
+                        continue;
+                    }else {
+                        i++;
+                        walkThrough(subObj, level + 1);
+                    }
                 }
                 sb.append(']');
             } else if (obj instanceof Collection) { // JAVA COLLECTION
                 sb.append('[');
                 Collection c = (Collection) obj;
                 Iterator colElements = c.iterator();
+                int i = 0;
                 while (colElements.hasNext()) {
-                    walkThrough(colElements.next(), level + 1);
-                    if (colElements.hasNext()) sb.append(',');
+                    Object subObj = colElements.next();
+                    if (subObj != null && i > 0){ sb.append(','); }
+                    if(subObj == null){
+                        continue;
+                    }else {
+                        walkThrough(subObj, level + 1);
+                        i++;
+                    }
                 }
                 sb.append(']');
             } else if (!isPrimitive(obj) && !(obj instanceof String)) { // ANY NON STRING/PRIMITIVE OBJECT
                 List<Field> fields = Stream.concat(Arrays.stream(obj.getClass().getDeclaredFields()),
                         Arrays.stream(obj.getClass().getSuperclass().getDeclaredFields())).collect(Collectors.toList());
-                Iterator<Field> fieldIter = fields.iterator();
                 sb.append('{');
-                while (fieldIter.hasNext()) {
-                    Field field = fieldIter.next();
-                    field.setAccessible(true);
-                    sb.append(wrapName(field.getName()));
+                int i = 0;
+                for (Field field : fields) {
                     try {
-                        walkThrough(field.get(obj), level + 1);
+                        field.setAccessible(true);
+                        Object subObj = field.get(obj);
+                        if (subObj != null && i > 0){ sb.append(','); }
+                        if(subObj == null){
+                            continue;
+                        } else {
+                            i++;
+                            sb.append(wrapName(field.getName()));
+                            walkThrough(subObj, level + 1);
+                        }
                     } catch (IllegalAccessException iae) {
-                        System.err.println("Failed to serialize " + field.getName());
+                        System.err.println("Failed to serialize " + field.getName() + ": " + iae.getMessage());
                         return;
                     }
-                    if(fieldIter.hasNext()) sb.append(',');
                 }
                 sb.append('}');
             } else { // OTHER
