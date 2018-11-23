@@ -1,4 +1,4 @@
-package ru.otus.test.shw9.data;
+package ru.otus.shw9.data;
 
 public class TestClass3 {
     TestClass2 tc2 = new TestClass2();
