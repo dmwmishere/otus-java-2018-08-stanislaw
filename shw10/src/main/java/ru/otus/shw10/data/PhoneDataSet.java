@@ -5,6 +5,7 @@ import lombok.ToString;
 
 @ToString
 @Data
-public abstract class DataSet {
-    long id;
+public class PhoneDataSet extends DataSet{
+    String phone;
+    long userId;
 }

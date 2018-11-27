@@ -1,4 +1,11 @@
 package ru.otus.shw10.data;
 
-public class UserDataSet {
+import lombok.Data;
+import lombok.ToString;
+
+@ToString
+@Data
+public class UserDataSet extends DataSet {
+    String name;
+    int age;
 }
