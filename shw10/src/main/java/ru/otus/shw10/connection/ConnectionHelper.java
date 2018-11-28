@@ -1,27 +1,20 @@
-package ru.otus.connection;
+package ru.otus.shw10.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-class ConnectionHelper {
+public class ConnectionHelper {
 
-    static Connection getConnection() {
+    public static Connection getConnection() {
         try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
 
-            String url = "jdbc:mysql://" +       //db type
-                    "localhost:" +               //host name
-                    "3306/" +                    //port
-                    "dbexample?" +              //db name
-                    "user=tully&" +              //login
-                    "password=tully&" +          //password
-                    "useSSL=false";              //do not use Secure Sockets Layer
+            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 
+            return DriverManager.getConnection("jdbc:derby:memory:testDB;create=true");
 
-            return DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException | ClassNotFoundException sqle) {
+            throw new RuntimeException(sqle);
         }
     }
 }
