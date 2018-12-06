@@ -10,7 +10,6 @@ public class ConnectionHelper {
         try {
 
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-
             return DriverManager.getConnection("jdbc:derby:memory:testDB;create=true");
 
         } catch (SQLException | ClassNotFoundException sqle) {

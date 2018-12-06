@@ -3,14 +3,19 @@ package ru.otus.shw10;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ru.otus.shw10.connection.ConnectionHelper;
-import ru.otus.shw10.data.DataSet;
 import ru.otus.shw10.data.ExtendedUserDataSet;
 import ru.otus.shw10.data.PhoneDataSet;
 import ru.otus.shw10.data.UserDataSet;
 import ru.otus.shw10.executor.DSExecutor;
 import ru.otus.shw10.reflection.ReflectionHelper;
+import ru.otus.shw6.engine.CacheEngine;
+import ru.otus.shw6.engine.MyCacheEngine;
 
 import java.sql.*;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class JDBCTest {
 
@@ -19,7 +24,7 @@ public class JDBCTest {
     @BeforeClass
     public static void initDB() throws SQLException {
         conn = ConnectionHelper.getConnection();
-        assert conn != null;
+        assertNotNull(conn);
         conn.createStatement().executeUpdate("create table userdataset ( " +
                 "id bigint not null generated always as identity (start with 1, increment by 1), " +
                 "name varchar(255), " +
@@ -45,7 +50,7 @@ public class JDBCTest {
 
     @Test
     public void test0_getData() throws SQLException {
-        assert conn!=null;
+        assertNotNull(conn);
 
         try(Statement stmt = conn.createStatement()){
             stmt.executeQuery("select * from userdataset");
@@ -75,6 +80,9 @@ public class JDBCTest {
 
         printTable("phonedataset");
 
+        new AssertTable(conn).assertSelectContain("select * from userdataset", Collections.singletonMap("name", "Unnamed1"));
+
+        new AssertTable(conn).assertSelectContain("select * from phonedataset", Collections.singletonMap("phone", "89437500298"));
     }
 
     @Test
@@ -84,10 +92,12 @@ public class JDBCTest {
         UserDataSet ds2 = dsExecutor.load(2, UserDataSet.class);
         System.out.println(ds);
         System.out.println(ds2);
-        assert ds != null;
-        assert ds2 != null;
-        assert ds.getPhone().equals("12345678901");
-        assert ds2.getName().equals("user2");
+
+        assertNotNull(ds);
+        assertNotNull(ds2);
+        assertEquals("12345678901", ds.getPhone());
+        assertEquals("user2", ds2.getName());
+
     }
 
     @Test
@@ -97,17 +107,18 @@ public class JDBCTest {
         user.setAge(40);
         user.setId(4L);
         ReflectionHelper.reflectionSetter(user, "name", "Another Name");
-        System.out.println(ReflectionHelper.reflectionGetter(user, "name"));
-        assert ReflectionHelper.reflectionGetter(user, "name").equals("Another Name");
+        System.out.println("Change name = " + ReflectionHelper.reflectionGetter(user, "name"));
+        assertEquals("Another Name", ReflectionHelper.reflectionGetter(user, "name"));
 
         ReflectionHelper.reflectionSetter(user, "age", 18);
-        System.out.println(ReflectionHelper.reflectionGetter(user, "age"));
-        assert ReflectionHelper.reflectionGetter(user, "age").equals(18);
+        System.out.println("Change age = " + ReflectionHelper.reflectionGetter(user, "age"));
+        assertEquals(18, ReflectionHelper.reflectionGetter(user, "age"));
 
         System.out.println(ReflectionHelper.getFieldsList(user));
-        assert ReflectionHelper.getFieldsList(user).contains("name");
-        assert ReflectionHelper.getFieldsList(user).contains("id");
-        assert ReflectionHelper.getFieldsList(user).contains("age");
+
+        assertTrue(ReflectionHelper.getFieldsList(user).contains("name"));
+        assertTrue(ReflectionHelper.getFieldsList(user).contains("id"));
+        assertTrue(ReflectionHelper.getFieldsList(user).contains("age"));
     }
 
     @Test
@@ -123,8 +134,33 @@ public class JDBCTest {
 
         ExtendedUserDataSet exUserLoad = dsExecutor.load(1, ExtendedUserDataSet.class);
         System.out.println(exUserLoad);
-        assert exUserLoad.getGender() == 0;
-        assert exUserLoad.getName().equals("SameName");
+
+        assertEquals(0, exUserLoad.getGender());
+        assertEquals("SameName", exUserLoad.getName());
+    }
+
+    @Test
+    public void test5_cached_fields(){
+        DSExecutor dsExecutor = new DSExecutor(conn);
+
+        for(int i = 0; i < 10; i++){
+            UserDataSet user = new UserDataSet();
+            user.setName("Unnamed" + i);
+            user.setAge(40 + i);
+            dsExecutor.save(user);
+        }
+
+
+        printTable("userdataset");
+
+        printTable("phonedataset");
+
+        AssertTable at = new AssertTable(conn);
+
+        for(int i = 0; i < 10; i++){
+            at.assertSelectContain("select * from userdataset", Collections.singletonMap("name", "Unnamed" + i));
+            at.assertSelectContain("select * from userdataset", Collections.singletonMap("age", Integer.toString(40+i)));
+        }
 
     }
 
