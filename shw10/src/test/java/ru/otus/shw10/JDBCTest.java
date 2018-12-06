@@ -23,6 +23,14 @@ public class JDBCTest {
         conn = ConnectionHelper.getConnection();
         assertNotNull(conn);
 
+        try(Statement stmt = conn.createStatement()){
+            stmt.executeUpdate("drop table userdataset");
+            stmt.executeUpdate("drop table phonedataset");
+            stmt.executeUpdate("drop table extendeduserdataset");
+        } catch (SQLException sqle){
+            System.err.println(sqle.getMessage());
+        }
+
         conn.createStatement().executeUpdate("create table userdataset ( " +
                 "id bigint not null generated always as identity (start with 1, increment by 1), " +
                 "name varchar(255), " +
@@ -49,11 +57,7 @@ public class JDBCTest {
     @After
     public void closeDBConnection() throws SQLException{
         System.out.println("CLOSE CONNECTION");
-        try(Statement stmt = conn.createStatement()){
-            stmt.executeUpdate("drop table userdataset");
-            stmt.executeUpdate("drop table phonedataset");
-            stmt.executeUpdate("drop table extendeduserdataset");
-        }
+
         conn.close();
     }
 
