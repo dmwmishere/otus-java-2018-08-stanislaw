@@ -56,8 +56,8 @@ public class DSExecutor {
             List<String> fields = ReflectionHelper.getFieldsList(ds);
             String SQL = String.format(SELECT, String.join(",", fields), ds.getClass().getSimpleName(), id);
             System.out.println("SQL = " + SQL);
-            try {
-                ResultSet rs = connection.createStatement().executeQuery(SQL);
+            try (Statement stmt = connection.createStatement()){
+                ResultSet rs = stmt.executeQuery(SQL);
                 if (rs.next()) {
                     for (String field : fields) {
                         try {
