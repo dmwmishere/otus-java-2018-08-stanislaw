@@ -1,30 +1,28 @@
 package ru.otus.shw10;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import ru.otus.shw10.connection.ConnectionHelper;
 import ru.otus.shw10.data.ExtendedUserDataSet;
 import ru.otus.shw10.data.PhoneDataSet;
 import ru.otus.shw10.data.UserDataSet;
 import ru.otus.shw10.executor.DSExecutor;
 import ru.otus.shw10.reflection.ReflectionHelper;
-import ru.otus.shw6.engine.CacheEngine;
-import ru.otus.shw6.engine.MyCacheEngine;
 
 import java.sql.*;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class JDBCTest {
 
-    private static Connection conn;
+    private Connection conn;
 
-    @BeforeClass
-    public static void initDB() throws SQLException {
+    @Before
+    public void initDB() throws SQLException {
+        System.out.println("OPEN CONNECTION");
         conn = ConnectionHelper.getConnection();
         assertNotNull(conn);
+
         conn.createStatement().executeUpdate("create table userdataset ( " +
                 "id bigint not null generated always as identity (start with 1, increment by 1), " +
                 "name varchar(255), " +
@@ -48,15 +46,25 @@ public class JDBCTest {
 
     }
 
+    @After
+    public void closeDBConnection() throws SQLException{
+        System.out.println("CLOSE CONNECTION");
+        try(Statement stmt = conn.createStatement()){
+            stmt.executeUpdate("drop table userdataset");
+            stmt.executeUpdate("drop table phonedataset");
+            stmt.executeUpdate("drop table extendeduserdataset");
+        }
+        conn.close();
+    }
+
     @Test
     public void test0_getData() throws SQLException {
         assertNotNull(conn);
 
-        try(Statement stmt = conn.createStatement()){
+        try(Statement stmt = conn.createStatement()) {
             stmt.executeQuery("select * from userdataset");
             stmt.execute("select * from phonedataset");
         }
-
 
     }
 
@@ -140,7 +148,7 @@ public class JDBCTest {
     }
 
     @Test
-    public void test5_cached_fields(){
+    public void test5_cached_fields() throws SQLException{
         DSExecutor dsExecutor = new DSExecutor(conn);
 
         for(int i = 0; i < 10; i++){
@@ -161,7 +169,6 @@ public class JDBCTest {
             at.assertSelectContain("select * from userdataset", Collections.singletonMap("name", "Unnamed" + i));
             at.assertSelectContain("select * from userdataset", Collections.singletonMap("age", Integer.toString(40+i)));
         }
-
     }
 
     private void printTable(String table){

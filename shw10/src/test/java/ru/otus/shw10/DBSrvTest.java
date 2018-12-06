@@ -65,6 +65,7 @@ public class DBSrvTest {
         user.setAdress(new AddressDataSet("Большая Якиманка"));
 
         dbs.save(user);
+
         UserDataSet readUser = dbs.read(3);
         System.out.println(readUser);
 
