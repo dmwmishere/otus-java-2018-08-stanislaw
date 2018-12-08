@@ -44,7 +44,7 @@ public class ReflectionHelper {
         if (fieldList == null) {
             System.out.println("Class fields not in cache");
             fieldList = getFieldsList(obj);
-//            cache.put(obj.getClass().getName(), fieldList);
+            cache.put(obj.getClass().getName(), fieldList);
         } else {
             System.out.println("Got fields from cache");
         }
