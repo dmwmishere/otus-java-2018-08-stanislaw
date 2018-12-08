@@ -53,7 +53,7 @@ public class DSExecutor {
     public <T extends DataSet> T load(long id, Class<T> clazz) {
         try {
             T ds = clazz.getDeclaredConstructor().newInstance();
-            List<String> fields = ReflectionHelper.getFieldsList(ds);
+            List<String> fields = ReflectionHelper.getFieldsList(ds, cache);
             String SQL = String.format(SELECT, String.join(",", fields), ds.getClass().getSimpleName(), id);
             System.out.println("SQL = " + SQL);
             try (Statement stmt = connection.createStatement()){
