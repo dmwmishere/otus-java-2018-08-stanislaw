@@ -10,6 +10,8 @@ public interface DBService extends AutoCloseable {
 
     UserDataSet read(long id);
 
+    UserDataSet read(String name);
+
     List<UserDataSet> readAll();
 
 }

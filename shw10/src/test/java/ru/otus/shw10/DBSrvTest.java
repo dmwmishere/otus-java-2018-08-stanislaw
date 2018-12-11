@@ -74,12 +74,6 @@ public class DBSrvTest {
 
         assertEquals(user.getName(), readUser.getName());
         assertEquals(user.getAge(), readUser.getAge());
-
-//        assertEquals(user.getAdress().getStreet(), readUser.getAdress().getStreet());
-//
-//        assertEquals(user.getPhones().size(), readUser.getPhones().size());
-//        assertEquals(user.getPhones().get(0).getPhone(), readUser.getPhones().get(0).getPhone());
-
     }
 
 }

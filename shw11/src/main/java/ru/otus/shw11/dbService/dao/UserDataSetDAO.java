@@ -21,7 +21,12 @@ public class UserDataSetDAO {
     }
 
     public UserDataSet read(long id) {
-        return session.load(UserDataSet.class, id);
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<UserDataSet> criteria = builder.createQuery(UserDataSet.class);
+        Root<UserDataSet> from = criteria.from(UserDataSet.class);
+        criteria.where(builder.equal(from.get("id"), id));
+        Query<UserDataSet> query = session.createQuery(criteria);
+        return query.uniqueResult();
     }
 
     public UserDataSet readByName(String name) {
@@ -38,11 +43,5 @@ public class UserDataSetDAO {
         CriteriaQuery<UserDataSet> criteria = builder.createQuery(UserDataSet.class);
         criteria.from(UserDataSet.class);
         return session.createQuery(criteria).list();
-//        List<UserDataSet> persons = session.createQuery(
-//               "SELECT u FROM UserDataSet u WHERE name=:name")
-//                .setParameter("name","Vasya")
-//                .getResultList();
-
-
     }
 }

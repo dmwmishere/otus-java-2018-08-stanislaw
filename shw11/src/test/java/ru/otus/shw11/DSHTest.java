@@ -31,10 +31,12 @@ public class DSHTest {
         PhoneDataSet phone1 = new PhoneDataSet();
         phone1.setPhone("89437500298");
         phone1.setUserId(1L);
+        phone1.setUser(user);
 
         PhoneDataSet phone2 = new PhoneDataSet();
         phone2.setPhone("89437500298");
         phone2.setUserId(1L);
+        phone2.setUser(user);
 
         user.setPhones(Arrays.asList(phone1, phone2));
 

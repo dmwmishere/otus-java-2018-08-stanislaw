@@ -9,7 +9,7 @@ public abstract class DataSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
 
     public void setId(Long id){
         this.id = id;

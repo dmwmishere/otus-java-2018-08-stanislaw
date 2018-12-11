@@ -25,6 +25,7 @@ public class DBServiceHibernateImpl implements DBService {
         configuration.addAnnotatedClass(PhoneDataSet.class);
         configuration.addAnnotatedClass(AddressDataSet.class);
 
+        // mySQL connection settings:
         //docker run -p 3306:3306 --name cmysql -e MYSQL_ROOT_PASSWORD=test -d mysql
 //        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 //        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
@@ -61,11 +62,11 @@ public class DBServiceHibernateImpl implements DBService {
     }
 
     public void save(UserDataSet dataSet) {
-        try (Session session = sessionFactory.openSession()) {
+        runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);
             dao.save(dataSet);
-//            session.save(dataSet);
-        }
+            return 1;
+        });
     }
 
     public UserDataSet read(long id) {
@@ -75,7 +76,8 @@ public class DBServiceHibernateImpl implements DBService {
         });
     }
 
-    public UserDataSet readByName(String name) {
+    @Override
+    public UserDataSet read(String name) {
         return runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);
             return dao.readByName(name);
