@@ -59,6 +59,11 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
+    public UserDataSet read(String name) {
+        throw new UnsupportedOperationException("read by name");
+    }
+
+    @Override
     public List<UserDataSet> readAll() {
         throw new UnsupportedOperationException("not supported by DSExecutor");
     }

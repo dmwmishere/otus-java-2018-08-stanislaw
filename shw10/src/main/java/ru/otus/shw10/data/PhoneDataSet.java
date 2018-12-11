@@ -1,24 +1,26 @@
 package ru.otus.shw10.data;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@ToString(callSuper = true)
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "phonedataset")
-public class PhoneDataSet extends DataSet{
+public class PhoneDataSet extends DataSet {
+
     @Column(name = "phone")
-    String phone;
+    private String phone;
 
-    @Column(name = "userid")
-    long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserDataSet user;
 
-    public void setUserId(Long userId){
+    // compatibility with homework 10;
+    private long userId;
+
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

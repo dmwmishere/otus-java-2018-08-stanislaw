@@ -36,9 +36,4 @@ public class AssertTable {
         }
     }
 
-
-    public void assertContainValue(Object targetValue, Class columnType, String columnName){
-
-    }
-
 }
