@@ -21,7 +21,7 @@ public class Main {
 
         for(int i = 0; i < SIZE; i++){
             db.getById(i);
-//            db.insertInto(new TableData(i, "User input", new byte [1024*1024]));
+            // db.insertInto(new TableData(i, "User input", new byte [1024*1024]));
             // Uncomment if using with javaagent:
             // Thread.sleep(1000);
         }
