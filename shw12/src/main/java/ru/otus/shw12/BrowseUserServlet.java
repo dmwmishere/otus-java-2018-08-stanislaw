@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,36 +32,30 @@ public class BrowseUserServlet extends HttpServlet {
         System.out.println("User count = " + users.size());
         System.out.println("User = " + users.get(0));
 
-        StringBuilder table = new StringBuilder();
+        List<Map<String, Object> > usersData = new ArrayList<>();
 
-        users.forEach(user -> table.append(mapUserToHtmlTable(user)));
+        users.forEach(user -> usersData.add(mapUserToMap(user)));
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("userCount", users.size());
-        pageVariables.put("userinfotable", table.toString());
-
-        String page = templateProcessor.getPage("browseuser.html", pageVariables);
+        pageVariables.put("users", usersData);
+        String page = templateProcessor.getPage("browseuser2.html", pageVariables);
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().println(page);
         resp.setStatus(HttpServletResponse.SC_OK);
 
     }
 
-    private String mapUserToHtmlTable(UserDataSet user){
-        try {
-            return "<tr>" +
-                    "<td>" + user.getId() + "</td>" +
-                    "<td>" + user.getName() + "</td>" +
-                    "<td>" + user.getAge() + "</td>" +
-                    "<td>" + user.getAdress().getStreet() + "</td>" +
-                    "<td>" + String.join(", ", user.getPhones().stream()
-                    .map(PhoneDataSet::getPhone).collect(Collectors.toList())) +
-                    "</td>" +
-                    "</tr>";
-        }catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    private Map<String, Object> mapUserToMap(UserDataSet user){
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("id", user.getId());
+        userData.put("name", user.getName());
+        userData.put("age", user.getAge());
+        userData.put("address", user.getAdress().getStreet());
+        userData.put("phones", String.join(", ", user.getPhones().stream()
+                .map(PhoneDataSet::getPhone).collect(Collectors.toList())));
+        return userData;
+
     }
 
 }
