@@ -26,7 +26,7 @@ public class AddUserServlet extends HttpServlet {
             throws IOException {
         System.out.println("Received = " + req.getParameterMap());
         dbSrv.save(mapParamsToUser(req.getParameterMap()));
-        resp.getWriter().println("OK");
+        resp.sendRedirect("/browseuser");
     }
 
     private UserDataSet mapParamsToUser(Map<String, String[]> params){

@@ -8,11 +8,6 @@ package ru.otus.shw12;
 */
 
 import com.github.javafaker.Faker;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import ru.otus.shw10.base.DBService;
 import ru.otus.shw10.data.AddressDataSet;
 import ru.otus.shw10.data.PhoneDataSet;
@@ -29,49 +24,42 @@ public class Main {
     private final static int PORT = 8090;
     private final static String PUBLIC_HTML = "public_html";
 
-    public static void main(String [] argz) throws Exception {
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setResourceBase(PUBLIC_HTML);
+    public static void main(String[] argz) throws Exception {
 
         DBService dbSrv = new DBServiceHibernateImpl();
 
-        // populate db with test data
+        populateWithTestData(dbSrv, 20);
+
+        UserDBServer uSrv = new UserDBServer(PUBLIC_HTML, PORT, dbSrv);
+        uSrv.start();
+        uSrv.join();
+    }
+
+    private static void populateWithTestData(DBService dbSrv, final int userCount) {
         UserDataSet user;
         AddressDataSet address;
         Random r = new Random();
         Faker faker = new Faker(new Locale("ru"));
-        for(int i = 0; i<r.nextInt(10) + 15; i++){
+        for (int i = 0; i < userCount; i++) {
             user = new UserDataSet();
             user.setName(faker.name().fullName());
             user.setAge(r.nextInt(30) + 16);
             address = new AddressDataSet();
             address.setStreet(faker.address().streetAddress());
             List<PhoneDataSet> phones = new ArrayList<>();
-            for(int j = 0; j < r.nextInt(4); j++){
+            for (int j = 0; j < r.nextInt(4); j++) {
                 PhoneDataSet phone = new PhoneDataSet();
                 phone.setPhone(faker.phoneNumber().phoneNumber());
                 phones.add(phone);
                 phone.setUser(user);
             }
-            if(phones.size() > 0){
+            if (phones.size() > 0) {
                 user.setPhones(phones);
             }
             user.setAdress(address);
             System.out.println(user);
             dbSrv.save(user);
         }
-
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        TemplateProcessor templateProcessor = new TemplateProcessor();
-
-        context.addServlet(new ServletHolder(new AddUserServlet(dbSrv)), "/useradd");
-        context.addServlet(new ServletHolder(new SearchUserServlet(dbSrv, templateProcessor)), "/searchuser");
-        context.addServlet(new ServletHolder(new BrowseUserServlet(dbSrv, templateProcessor)), "/browseuser");
-        Server server = new Server(PORT);
-        server.setHandler(new HandlerList(resourceHandler, context));
-
-        server.start();
-        server.join();
     }
 
 }

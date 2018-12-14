@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>User browser</title>
+<meta charset="utf-8">
 <style>
 table, th, td {
 	 border-collapse: collapse;
@@ -21,14 +22,23 @@ table, th, td {
 <br/>
 Total users count: <b>${userCount}</b>
 <br/>
-<table>
+
+  <table>
 <th>Id</th>
 <th>Name</th>
 <th>Age</th>
 <th>Address</th>
 <th>Phone list</th>
-${userinfotable}
-</table>
+  <#list users as user>
+  	<tr>
+		<td>${user.id}</td>
+		<td>${user.name}</td>
+		<td>${user.age}</td>
+		<td>${user.address}</td>
+		<td>${user.phones}</td>
+	</tr>
+	</#list>
+  </table>
 
 </body>
 </html>
