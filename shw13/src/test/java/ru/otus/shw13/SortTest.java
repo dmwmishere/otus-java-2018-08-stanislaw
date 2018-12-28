@@ -2,6 +2,9 @@ package ru.otus.shw13;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.otus.shw13.sort.SortingMethods;
+import ru.otus.shw13.sort.SortingUtils;
+import ru.otus.shw13.utils.ArrayHelper;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -29,7 +32,7 @@ public class SortTest {
     @Test
     public void test0_non_threaded_sort(){
         long startTime = System.currentTimeMillis();
-        Sorting.bubbleSort(array);
+        SortingMethods.bubbleSort(array);
         System.out.println("Sort time: " + (System.currentTimeMillis()-startTime) + "ms.");
 
         for(int i = 4; i < array.length; i++){
@@ -40,13 +43,13 @@ public class SortTest {
     @Test
     public void test1_test_merge_algorithm(){
 
-        Comparable [] mergeArray = Sorting.mergeArrays(
+        Comparable [] mergeArray = ArrayHelper.mergeArrays(
                 new Comparable[]{1,3,6,9,9,10,13,17},
                 new Comparable[]{-1,1,3,6,7,9,12,100});
-        Comparable [] mergeArray2 = Sorting.mergeArrays(
+        Comparable [] mergeArray2 = ArrayHelper.mergeArrays(
                 new Comparable[]{0.1f, 1f, 3.3f},
                 new Comparable[]{1f, 3.3f, 55f});
-        Comparable [] mergeArray3 = Sorting.mergeArrays(
+        Comparable [] mergeArray3 = ArrayHelper.mergeArrays(
                 new Comparable[]{"a", "e"},
                 new Comparable[]{"b", "c", "d"});
         for(int i = 1; i < mergeArray3.length; i++){
@@ -67,17 +70,17 @@ public class SortTest {
 
         final int threadCount = 4;
 
-        printArray(Sorting.splitPartitions(splitArray, threadCount, 0));
-        printArray(Sorting.splitPartitions(splitArray, threadCount, 1));
-        printArray(Sorting.splitPartitions(splitArray, threadCount, 2));
-        printArray(Sorting.splitPartitions(splitArray, threadCount, 3));
+        printArray(ArrayHelper.splitPartitions(splitArray, threadCount, 0));
+        printArray(ArrayHelper.splitPartitions(splitArray, threadCount, 1));
+        printArray(ArrayHelper.splitPartitions(splitArray, threadCount, 2));
+        printArray(ArrayHelper.splitPartitions(splitArray, threadCount, 3));
 
     }
 
     @Test
     public void test3_thread_sort() throws InterruptedException {
         long startTime = System.currentTimeMillis();
-        Comparable [] sortedArray = Sorting.threadSort(array, Sorting::bubbleSort);
+        Comparable [] sortedArray = SortingUtils.threadSort(array, SortingMethods::bubbleSort, 4);
         System.out.println("Sort time: " + (System.currentTimeMillis()-startTime) + "ms.");
 
         Arrays.sort(array);
