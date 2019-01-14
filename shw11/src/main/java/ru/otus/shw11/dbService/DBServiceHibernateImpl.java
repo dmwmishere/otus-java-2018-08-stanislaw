@@ -11,14 +11,28 @@ import ru.otus.shw10.data.AddressDataSet;
 import ru.otus.shw10.data.PhoneDataSet;
 import ru.otus.shw10.data.UserDataSet;
 import ru.otus.shw11.dbService.dao.UserDataSetDAO;
+import ru.otus.shw6.engine.CacheEngine;
+import ru.otus.shw6.engine.MyCacheEngine;
 
 import java.util.List;
 import java.util.function.Function;
 
 public class DBServiceHibernateImpl implements DBService {
+
     private final SessionFactory sessionFactory;
 
-    public DBServiceHibernateImpl() {
+    private final CacheEngine<Long, UserDataSet> cache;
+
+    /**
+     * use default cache configuration if no caching service specified
+     */
+    public DBServiceHibernateImpl(){
+        this(new MyCacheEngine(1000));
+    }
+
+    public DBServiceHibernateImpl(CacheEngine cache) {
+        this.cache = cache;
+
         Configuration configuration = new Configuration();
 
         configuration.addAnnotatedClass(UserDataSet.class);
@@ -46,10 +60,6 @@ public class DBServiceHibernateImpl implements DBService {
         sessionFactory = createSessionFactory(configuration);
     }
 
-    public DBServiceHibernateImpl(Configuration configuration) {
-        sessionFactory = createSessionFactory(configuration);
-    }
-
     private static SessionFactory createSessionFactory(Configuration configuration) {
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
         builder.applySettings(configuration.getProperties());
@@ -62,6 +72,7 @@ public class DBServiceHibernateImpl implements DBService {
     }
 
     public void save(UserDataSet dataSet) {
+        // as long as add form redirects to browser form this will get into cache as well
         runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);
             dao.save(dataSet);
@@ -70,25 +81,48 @@ public class DBServiceHibernateImpl implements DBService {
     }
 
     public UserDataSet read(long id) {
-        return runInSession(session -> {
-            UserDataSetDAO dao = new UserDataSetDAO(session);
-            return dao.read(id);
-        });
+
+        if(cache.get(id) == null) {
+            UserDataSet userDataSet = runInSession(session -> {
+                UserDataSetDAO dao = new UserDataSetDAO(session);
+                return dao.read(id);
+            });
+            cache.put(id, userDataSet);
+            System.out.println("PUT " + id + " INTO CACHE");
+            return userDataSet;
+        } else {
+            System.out.println("GET " + id + " FROM CACHE");
+            return cache.get(id);
+        }
     }
 
     @Override
     public UserDataSet read(String name) {
-        return runInSession(session -> {
-            UserDataSetDAO dao = new UserDataSetDAO(session);
-            return dao.readByName(name);
-        });
+        if(cache.get((long)name.hashCode()) == null) {
+            UserDataSet userDataSet = runInSession(session -> {
+                UserDataSetDAO dao = new UserDataSetDAO(session);
+                return dao.readByName(name);
+            });
+            cache.put((long)name.hashCode(), userDataSet);
+            System.out.println("PUT " + name + " INTO CACHE");
+            return userDataSet;
+        } else {
+            System.out.println("GET " + name + " FROM CACHE");
+            return cache.get((long)name.hashCode());
+        }
     }
 
     public List<UserDataSet> readAll() {
-        return runInSession(session -> {
+        List<UserDataSet> users = runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);
             return dao.readAll();
         });
+
+        // update cache for each user by id,
+        // caching by name implemented on search level only
+        users.forEach(user -> cache.put(user.getId(), user));
+        System.out.println("CACHE UPDATED!");
+        return users;
     }
 
     public void shutdown() {

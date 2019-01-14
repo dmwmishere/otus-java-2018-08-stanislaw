@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app>
+
+    <display-name>HomeWork14</display-name>
+    <description>Implements homework 12 as war with spring features</description>
+
+    <servlet>
+        <servlet-name>addUser</servlet-name>
+        <servlet-class>ru.otus.shw14.springWrappedServlets.AddUserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>searchUser</servlet-name>
+        <servlet-class>ru.otus.shw14.springWrappedServlets.SearchUserServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>browseUsers</servlet-name>
+        <servlet-class>ru.otus.shw14.springWrappedServlets.BrowseUserServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>addUser</servlet-name>
+        <url-pattern>/useradd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>searchUser</servlet-name>
+        <url-pattern>/searchuser</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>browseUsers</servlet-name>
+        <url-pattern>/browseuser</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <listener>
+        <listener-class>
+            ru.otus.shw14.springWrappedServlets.SpringContextListener
+        </listener-class>
+    </listener>
+
+</web-app>
