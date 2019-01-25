@@ -63,7 +63,7 @@ public class Main {
         UserDataSet user;
         AddressDataSet address;
         Random r = new Random();
-        Faker faker = new Faker(new Locale("bg"));
+        Faker faker = new Faker(new Locale("ru"));
         for (int i = 0; i < userCount; i++) {
             user = new UserDataSet();
             user.setName(faker.name().fullName());
