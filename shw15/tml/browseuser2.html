@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//RU" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>User browser</title>
+<meta charset="utf-8">
+<style>
+table, th, td {
+	 border-collapse: collapse;
+    border: 1px solid black;
+    text-align: left;
+}
+</style>
+</head>
+<body>
+<div class="top">
+    <img src="logo.png"/>
+    <br/>
+    <a href="useraddform.html">Добавить пользователя</a>
+    <a href="searchuserform.html">Найти пользователя</a>
+    <a href="browseuser">Просмотр пользователей</a>
+    <a href="asyncadduser.html">Добавить пользователя (асинхронно)</a>
+</div>
+<br/>
+Total users count: <b>${userCount}</b>
+<br/>
+
+  <table>
+<th>Id</th>
+<th>Name</th>
+<th>Age</th>
+<th>Address</th>
+<th>Phone list</th>
+  <#list users as user>
+  	<tr>
+		<td>${user.id}</td>
+		<td>${user.name}</td>
+		<td>${user.age}</td>
+		<td>${user.address}</td>
+		<td>${user.phones}</td>
+	</tr>
+	</#list>
+  </table>
+
+</body>
+</html>
