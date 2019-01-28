@@ -1,6 +1,6 @@
 package ru.otus.shw15.app;
 
-import ru.otus.shw10.base.DBService;
+import ru.otus.shw15.db.DBService;
 import ru.otus.shw15.messageSystem.Address;
 import ru.otus.shw15.messageSystem.Addressee;
 import ru.otus.shw15.messageSystem.Message;

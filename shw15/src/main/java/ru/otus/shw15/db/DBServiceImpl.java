@@ -4,16 +4,15 @@ import ru.otus.shw10.data.UserDataSet;
 import ru.otus.shw11.dbService.DBServiceHibernateImpl;
 import ru.otus.shw15.app.MessageSystemContext;
 import ru.otus.shw15.messageSystem.Address;
-import ru.otus.shw15.messageSystem.Addressee;
 import ru.otus.shw15.messageSystem.MessageSystem;
 
-public class DBMessageSystemImpl extends DBServiceHibernateImpl implements Addressee {
+public class DBServiceImpl extends DBServiceHibernateImpl implements DBService {
 
     private final Address address;
 
     private final MessageSystemContext context;
 
-    public DBMessageSystemImpl(MessageSystemContext context, Address address) {
+    public DBServiceImpl(MessageSystemContext context, Address address) {
         this.context = context;
         this.address = address;
     }

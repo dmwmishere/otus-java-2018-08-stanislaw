@@ -9,7 +9,7 @@ import ru.otus.shw10.data.PhoneDataSet;
 import ru.otus.shw10.data.UserDataSet;
 import ru.otus.shw12.*;
 import ru.otus.shw15.app.MessageSystemContext;
-import ru.otus.shw15.db.DBMessageSystemImpl;
+import ru.otus.shw15.db.DBServiceImpl;
 import ru.otus.shw15.messageSystem.Address;
 import ru.otus.shw15.messageSystem.MessageSystem;
 import ru.otus.shw15.frontend.WebSocketUserDbServlet;
@@ -38,7 +38,7 @@ public class Main {
         Address dbAddress = new Address("DB");
         context.setDbAddress(dbAddress);
 
-        DBMessageSystemImpl dbSrv = new DBMessageSystemImpl(context, dbAddress);
+        DBServiceImpl dbSrv = new DBServiceImpl(context, dbAddress);
 
 
         TemplateProcessor templateProcessor = new TemplateProcessor();
