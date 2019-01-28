@@ -1,9 +1,8 @@
 package ru.otus.shw15.app.messages;
 
-import ru.otus.shw10.base.DBService;
+import ru.otus.shw15.db.DBService;
 import ru.otus.shw10.data.UserDataSet;
 import ru.otus.shw15.app.MsgToDB;
-import ru.otus.shw15.db.DBMessageSystemImpl;
 import ru.otus.shw15.messageSystem.Address;
 
 /**
@@ -21,6 +20,6 @@ public class UserAddRq extends MsgToDB {
     public void exec(DBService dbService) {
         System.out.println("DB message received");
         dbService.save(user);
-        ((DBMessageSystemImpl)dbService).getMS().sendMessage(new UserAddRs(getTo(), getFrom(), "DB - OK"));
+        dbService.getMS().sendMessage(new UserAddRs(getTo(), getFrom(), "DB - OK"));
     }
 }
