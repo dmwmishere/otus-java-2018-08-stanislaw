@@ -1,5 +1,6 @@
 package ru.otus.shw10.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ public class PhoneDataSet extends DataSet {
     @Column(name = "phone")
     private String phone;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private UserDataSet user;
 
